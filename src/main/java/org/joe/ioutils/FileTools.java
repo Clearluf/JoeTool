@@ -1,7 +1,5 @@
 package org.joe.ioutils;
 
-import org.junit.jupiter.api.Test;
-
 import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -14,7 +12,7 @@ import java.util.Stack;
  * @date 2022/8/9 20:29
  * @apiNote 文件工具类
  */
-public class FileUtils {
+public class FileTools {
 
 
     /**
@@ -108,6 +106,88 @@ public class FileUtils {
         }
     }
 
+
+
+    /**
+     * 替换文件内容，全盘替换
+     * @param oldStr 旧字段
+     * @param newStr 新字段
+     * @param path 文件路径
+     */
+    public static void replaceFileContent(String oldStr, String newStr, Path path){
+        replaceFileContent(oldStr, newStr, path,true);
+    }
+
+    /**
+     * 替换文件内容
+     * @param oldStr 旧字段
+     * @param newStr 新字段
+     * @param path 文件路径
+     * @param allReplace 是否全部替换
+     */
+    public static void replaceFileContent(String oldStr, String newStr, Path path, boolean allReplace){
+        try {
+            List<String> allLines = Files.readAllLines(path);
+            for (int i=0;i<allLines.size();i++){
+                String str = allLines.get(i);
+                if (str.contains(oldStr)){
+                    allLines.set(i,str.replace(oldStr,newStr));
+                    if (!allReplace){
+                        break;
+                    }
+                }
+            }
+            Files.write(path,allLines,StandardOpenOption.WRITE);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 文件增加新行
+     * @param line 行内容
+     * @param index 行所在位置
+     * @param path 文件路径
+     */
+    public static void appendLine(String line,int index,Path path){
+        try {
+            List<String> allLines = Files.readAllLines(path);
+            allLines.add(index,line);
+            Files.write(path,allLines);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 文件最上面增加内容
+     * @param line 行内容
+     * @param path 文件路径
+     */
+    public static void appendLineAtHead(String line,Path path){
+        try {
+            List<String> allLines = Files.readAllLines(path);
+            allLines.add(0,line);
+            Files.write(path,allLines);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 文件最下面增加内容
+     * @param line 行内容
+     * @param path 文件路径
+     */
+    public static void appendLineAtTail(String line,Path path){
+        try {
+            List<String> allLines = Files.readAllLines(path);
+            allLines.add(line);
+            Files.write(path,allLines);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
 
